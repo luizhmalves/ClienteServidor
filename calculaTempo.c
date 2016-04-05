@@ -7,8 +7,6 @@ void *calculaTempo(void *requisicao){
 	pthread_exit(NULL);
 
 }
-
-
 int mantemRequisicao(int tempo,int cpRequisicao){
 	int t = tempo;
 	int cpReq = cpRequisicao;
