@@ -33,4 +33,5 @@ void cliente(){
 		tempo = randomizaTempo();
 		cpu = randomizaCpuMemoria();
 		memoria = randomizaCpuMemoria();
+		//FazerDepois retirar as atribuições acima
 }

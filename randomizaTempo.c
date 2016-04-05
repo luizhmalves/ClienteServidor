@@ -5,4 +5,5 @@ int randomizaTempo(){
 	
 	srand((unsigned)time(NULL));
 	return 10 + (rand()% 60000);
+	//FazerDepois testar separadamente
 }

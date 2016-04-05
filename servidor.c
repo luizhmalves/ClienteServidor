@@ -15,6 +15,6 @@ void servidor(){
 	 * Função que converta solicitação cliente em inteiro.
 	 * Passar conversão para calculaCPUDisponivel.c
 	 * Passar para calculaMemDisponivel.c		
-	* /
+	*/
 	
 }
