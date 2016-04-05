@@ -6,6 +6,7 @@ int mantemRequisicao(int arg);
 int socket(int arg);
 int salvaCapacidadeRequisicao(int arg);
 int randomizaTempo();
-int randomizaCpuMemoria();
+int randomizaCpu()
+int randomizaMemoria();
 char converteIntString(int arg);
 void converteStringInt(char arg1[]);
