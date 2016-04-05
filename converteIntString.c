@@ -1,9 +1,10 @@
 #include <stdio.h>
 #include <string.h>
-#include "biblioteca/sDistribuido.h"
+#include "main.h"
 
-char converteIntString(int opcao){
-	char mensagem[14];
+void *converteIntString(char *retorno[15],int opcao){
+	int indice;
+	char mensagem[15];
 	mensagem[0] = '#';
 	char bufCpu[2];
 	char bufMem[2];
@@ -11,14 +12,18 @@ char converteIntString(int opcao){
 	char verificacao[9];
 	char alocacao[15];
 	int tempo = randomizaTempo();
-	int memoria = randomizaCpuMemoria();
-	int cpu = randomizaCpuMemoria();
+	int memoria = randomizaMemoria();
+	int cpu = randomizaCpu();
 	if (opcao == 1){
 		sprintf(bufCpu,"%cpu",cpu);
 		strcat(mensagem, bufCpu);
 		sprintf(bufMem,"%memoria", memoria);
 		strcat(mensagem, bufMem);
-		return mensagem;
+		for(indice = 0; indice < 15; indice ++){
+			*retorno[indice] = mensagem[indice];
+		}
+		//return (retorno);
+		
 	}else{
 		sprintf(bufCpu,"%cpu",cpu);
 		strcat(mensagem, bufCpu);
@@ -26,9 +31,24 @@ char converteIntString(int opcao){
 		strcat(mensagem, bufMem);
 		sprintf(bufTempo, "%tempo", tempo);
 		strcat(mensagem, bufTempo);
-		return mensagem;
+		for(indice = 0; indice < 15; indice ++){
+			*retorno[indice] = mensagem[indice];
+		}
+		//return (retorno);
 	}
-	/* FazerDepois problemas no retorno usar ponteiro como argumento
-	 *  e passar mensagem depois de cocatenada para o ponteiro
+	/* FazerDepois problemas saida falha de segmentação
+	 * testada separadamente somente com as funções
+	 * de randomização necessárias
+	 * e um main generico como este
+	 * #include "main.h"
+int main(){
+	
+	int opcao = 1;
+	char mensagem[15];
+	converteIntString(mensagem[15],opcao);
+	printf("%s\n", mensagem[15]);
+	return 0;
+}
 	 */
 }
+
