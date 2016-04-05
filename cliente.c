@@ -30,8 +30,5 @@ void cliente(){
 	 * se negada enviar para outro servidor a mensagem de verificação
 	 */
 	 while(TRUE){
-		tempo = randomizaTempo();
-		cpu = randomizaCpuMemoria();
-		memoria = randomizaCpuMemoria();
-		//FazerDepois retirar as atribuições acima
+	}
 }

@@ -4,7 +4,7 @@
 void servidor(){
 	int cpMem = 90;
 	int cpCpu = 90;
-	int porta;
+	int porta; // para teste local
 	char respostaPositiva[] = "#concedida";
 	char respostaNegativa[] = "#negada#";
 	//FazerDepois criar função que converta a resposta da consulta em inteiros para enviar ao cliente

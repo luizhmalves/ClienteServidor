@@ -7,5 +7,6 @@ void converteStringInt(char arg1[]){
  * tem que separar a string para converter
  * e enviar como parametro para cada função que calcula
  * testar separadamente
+ * necessário criar lógica
  */
 }
