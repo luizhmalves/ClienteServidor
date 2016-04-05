@@ -5,4 +5,5 @@ int randomizaCpuMemoria(){
 	
 	srand((unsigned)time(NULL));
 	return (rand()% 90);
+	//Não testada separadamente
 }

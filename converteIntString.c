@@ -1,14 +1,15 @@
 #include <stdio.h>
 #include <string.h>
 #include "biblioteca/sDistribuido.h"
+
 char converteIntString(int opcao){
 	char mensagem[14];
 	mensagem[0] = '#';
 	char bufCpu[2];
 	char bufMem[2];
-	char bufTempo[5];
+	char bufTempo[6];
 	char verificacao[9];
-	char alocacao[14];
+	char alocacao[15];
 	int tempo = randomizaTempo();
 	int memoria = randomizaCpuMemoria();
 	int cpu = randomizaCpuMemoria();
@@ -27,4 +28,5 @@ char converteIntString(int opcao){
 		strcat(mensagem, bufTempo);
 		return mensagem;
 	}
+	//FazerDepois não testada separadamente
 }
