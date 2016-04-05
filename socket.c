@@ -12,7 +12,7 @@
 #include <errno.h>
 
 #define PORT 1234
-//FazerDepois adaptação
+//FazerDepois adaptação para o código
 int main(){
 
 
