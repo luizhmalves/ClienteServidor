@@ -28,5 +28,7 @@ char converteIntString(int opcao){
 		strcat(mensagem, bufTempo);
 		return mensagem;
 	}
-	//FazerDepois não testada separadamente
+	/* FazerDepois problemas no retorno usar ponteiro como argumento
+	 *  e passar mensagem depois de cocatenada para o ponteiro
+	 */
 }
