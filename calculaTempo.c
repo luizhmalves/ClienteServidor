@@ -21,6 +21,5 @@ int mantemRequisicao(int tempo,int cpRequisicao){
 	//Deve ser chamada para sincronizar as threads no final
 	pthread_join(threads,NULL);
 	return cpReq;
-
 }
 
