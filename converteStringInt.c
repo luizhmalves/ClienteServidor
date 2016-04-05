@@ -6,5 +6,6 @@ void converteStringInt(char arg1[]){
  * usar a função atoi();
  * tem que separar a string para converter
  * e enviar como parametro para cada função que calcula
+ * testar separadamente
  */
 }
