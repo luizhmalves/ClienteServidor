@@ -3,7 +3,7 @@
 void main(int argc, char *argv[]){
 	int opcao;
 	printf("Este computador eh: <1> Servidor <2> Cliente.\n");
-	scanf(%d,&opcao);
+	scanf("%d",&opcao);
 	switch(opcao){
 		case 1:
 			servidor();
