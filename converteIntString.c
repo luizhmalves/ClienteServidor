@@ -1,12 +1,10 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
-#include <string.h>
-#include "main.h"
+#include "biblioteca/sDistribuido.h"
 
 void converteIntString(char *mensagem,int n,int opcao){
-	int indice;
-	strcat(mensagem, "#");
+	int indice;	
 	char bufCpu[2];
 	char bufMem[2];
 	char bufTempo[6];
@@ -15,6 +13,7 @@ void converteIntString(char *mensagem,int n,int opcao){
 	int tempo = randomizaTempo();
 	int memoria = randomizaMemoria();
 	int cpu = randomizaCpu();
+	strcat(mensagem, "#");
 	if (opcao == 1){
 		//mensagem de verificação
 		sprintf(bufCpu,"%d",cpu);
