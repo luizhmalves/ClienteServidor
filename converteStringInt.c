@@ -14,15 +14,15 @@ void converteStringInt(char *mensagem, int tamanho){
 	int indice1 = 0;
 	int indice2= 0;
 	int indice3 = 0;
-	for(indice = 0; indice < tamanho; i++){
-		if((mensagem[i] != '#' || mensagem != '?') && i < 3){
-			bufCpu[indice1] = mensagem[i];
+	for(indice = 0; indice < tamanho; indice++){
+		if((mensagem[indice] != '#' || mensagem[indice] != '?') && indice < 3){
+			bufCpu[indice1] = mensagem[indice];
 			indice1++;
-		}else if ((mensagem[i] != '#' || mensagem[i] != '?') && (i > 3 && i < 8)){
-			bufMem[indice2] = mensagem[i];
+		}else if ((mensagem[indice] != '#' || mensagem[indice] != '?') && (indice > 3 && indice < 8)){
+			bufMem[indice2] = mensagem[indice];
 			indice2++;
-		}else if ((mensagem[i] != '#' || mensagem[i] != '?') && (i > 8 && i < tamanho)){
-			bufTempo[indice3] = mensagem[i];
+		}else if ((mensagem[indice] != '#' || mensagem[indice] != '?') && (indice > 8 && indice < tamanho)){
+			bufTempo[indice3] = mensagem[indice];
 			indice3++;
 		}
 	}
