@@ -10,6 +10,3 @@ int randomizaCpu();
 int randomizaMemoria();
 void *converteIntString(char *arg1[],int arg2);
 void converteStringInt(char arg1[]);
-
-
-teste;
