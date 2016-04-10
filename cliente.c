@@ -20,6 +20,7 @@ void cliente(){
 	int sockfd;
 	struct sockaddr_in local;
 	char buffer[16];
+	char copMensagem[16];
 	/* FazerDepois colocar apartir daqui em um loop
 	 * Criar matriz com os endereços de ip
 	 * criar vetor de inteiros das portas para teste local
@@ -40,6 +41,7 @@ void cliente(){
 		return -1;
 	}
 	MsgVerificacao(buffer);
+	strcpy(copMensagem, buffer);
 	if(send(sockfd, buffer, 16, 0) < 0){
 		perror("Falha no envio da mensagem de verificação.\n");
 	}
@@ -52,7 +54,7 @@ void cliente(){
 	}
 	printf("Resposta de alocação do servidor: %s.\n");
 	if(strncmp(buffer,"#concedida#", 11) == 0){
-		MsgAlocacao(buffer);
+		MsgAlocacao(copMensagem);
 		if(send(sockfd, buffer, 16, 0) < 0){
 			perror("Falha no envio da mensagem de alocação.\n");
 		}

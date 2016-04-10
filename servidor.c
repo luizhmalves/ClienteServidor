@@ -35,6 +35,7 @@ void* servidorThread(void* arg){
 			pthread_exit((void*) 0);
 		}
 		printf("Pedido de Verificação do Cliente: %s.\n", buffer_do_cliente);
+		
 		respostaConsulta(buffer_do_cliente,cpu,mem);
 			
 		if(send(sockEntrada,buffer_do_cliente, 16, 0) < 0){
@@ -53,9 +54,7 @@ void* servidorThread(void* arg){
 				perror("Falha no envio da resposta da alocação.\n");
 				close(sockEntrada);
 				pthread_exit((void*) 0);
-			}
-			
-				
+			}				
 		}else{
 			strcpy(buffer_do_cliente,respostaNegativa);
 			close(sockEntrada);
