@@ -1,9 +1,8 @@
 #include <stdio.h>
 #include <string.h>
-#include "biblioteca/sDistribuido.h"
-#include <stdio.h>
-#include <string.h>
 #include <stdlib.h>
+#include "biblioteca/sDistribuido.h"
+
 
 void converteStringInt(char *mensagem, int tamanho){
 	
@@ -33,10 +32,6 @@ void converteStringInt(char *mensagem, int tamanho){
 		
 	
 /*FazerDepois 
- * usar a função atoi();
- * tem que separar a string para converter
- * e enviar como parametro para cada função que calcula
- * testar separadamente
- * necessário criar lógica
+ * Não retorna corretamente
  */
 }
