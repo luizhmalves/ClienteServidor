@@ -9,4 +9,4 @@ void respostaConsulta(char *arg1, int arg2, int arg3);
 int randomizaTempo();
 int randomizaCpu();
 int randomizaMemoria();
-void constMsgCliente(char *arg1,int arg2,int arg3);
+void MsgVerificacao(char *arg1, int arg2);
