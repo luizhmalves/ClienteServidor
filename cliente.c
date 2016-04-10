@@ -1,34 +1,63 @@
 #include <stdio.h>
+#include <stdlib.h>
+#include <sys/time.h>
+#include <sys/types.h>
+#include <sys/socket.h>
+#include <sys/un.h>
+#include <netdb.h>
+#include <netinet/in.h>
+#include <arpa/inet.h>
+#include <fcntl.h>
+#include <unistd.h>
+#include <errno.h>
 #include "biblioteca/sDistribuido.h"
+
+#define PORTA 1234
 #define TRUE 1
-typedef dadosServidor{
-	int porta;
-	char ip[];//FazerDepois tamanho do vetor
-}server
+
 void cliente(){
-	int quantServidores;
-	int indice;
-	int tempo;
-	int memoria;
-	int cpu;
-	server servidores[];
-	printf("Informe a quantidade de servidores que estão conectados nessa rede:\n");
-	scanf("%d",&quantServidores);
-	//FazerDepois a alocação que está faltando ainda
-	for(indice = 0; indice < quantServidores; indice ++){
-		printf("Informe a porta do servidor %d:\n",(indice + 1));
-		scanf("%d",&servidores[indice].porta);
-		printf("Informe o IP do servidor %d:\n", (indice +1));
-		scanf("%s",&servidores[indice]->ip);//FazerDepois verificação desse acesso ao vetor como ponteiro
+	
+	int sockfd;
+	struct sockaddr_in local;
+	char buffer[16];
+	/* FazerDepois colocar apartir daqui em um loop
+	 * Criar matriz com os endereços de ip
+	 * criar vetor de inteiros das portas para teste local
+	*/
+	if((sockfd = socket(AF_INET, SOCK_STREAM, 0)) < 0){
+		perror("Falha na criação do soquete!\n");
+		exit(1);
 	}
-	/*
-	 * FazerDepois conversão da mensagem de verificação de inteiro para string
-	 * converter mensagem de alocação
-	 * Enviar para o servidor mensagem de verificação
-	 * Aguardar resposta
-	 * Se confirmada enviar mensagem de alocação
-	 * se negada enviar para outro servidor a mensagem de verificação
-	 */
-	 while(TRUE){
+	
+	memset(&local, 0, sizeof(local));
+	local.sin_family		= AF_INET;
+	local.sin_port			= htons(PORTA);
+	//inet_aton(ip[i][j], &(local.sin_addr)); //uso geral
+	inet_aton("localhost", &(local.sin_addr));
+	
+	if(connect(sockfd, (struct sockaddr *) &local, sizeof(local)) < )){
+		perror("Falha ao conectar!\n");
+		return -1;
 	}
+	MsgVerificacao(buffer);
+	if(send(sockfd, buffer, 16, 0) < 0){
+		perror("Falha no envio da mensagem de verificação.\n");
+	}
+	if(recv(sockfd, buffer, 16, 0) < 0){
+		perror("Erro no recebimento de resposta da consulta.\n");
+	}
+	printf("Resposta de consulta ao servidor: %s.\n");
+	if(recv(sockfd, buffer, 16, 0) < 0){
+		perror("Erro no recebimento de resposta da consulta.\n");
+	}
+	printf("Resposta de alocação do servidor: %s.\n");
+	if(strncmp(buffer,"#concedida#", 11) == 0){
+		MsgAlocacao(buffer);
+		if(send(sockfd, buffer, 16, 0) < 0){
+			perror("Falha no envio da mensagem de alocação.\n");
+		}
+	}else if(strncmp(buffer,"#negada#", 8)){
+		close(sockfd);
+		//break quando houver loop.
+	}		
 }

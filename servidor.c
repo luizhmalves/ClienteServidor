@@ -34,20 +34,14 @@ void* servidorThread(void* arg){
 			close(sockEntrada);
 			pthread_exit((void*) 0);
 		}
-		
+		printf("Pedido de Verificação do Cliente: %s.\n", buffer_do_cliente);
 		respostaConsulta(buffer_do_cliente,cpu,mem);
 			
 		if(send(sockEntrada,buffer_do_cliente, 16, 0) < 0){
 			perror("Falha no envio da resposta da alocação.\n");
 			close(sockEntrada);
 			pthread_exit((void*) 0);
-		}
-		
-		if(recv(sockEntrada,buffer_do_cliente, 16, 0) < 0){
-			perror("Falha no recebimento da verificação.\n");
-			close(sockEntrada);
-			pthread_exit((void*) 0);
-		}
+		}		
 		
 		reqCpu = convAlocCpu(buffer_do_cliente);
 		reqMem = convAlocMem(buffer_do_cliente);
@@ -60,17 +54,24 @@ void* servidorThread(void* arg){
 				close(sockEntrada);
 				pthread_exit((void*) 0);
 			}
-			sleep(reqTempo);
-			cpu = atualizaCpu(cpu,reqCpu,2);
-			mem = atualizaMem(mem,reqMem,2);
+			
 				
 		}else{
 			strcpy(buffer_do_cliente,respostaNegativa);
 			close(sockEntrada);
 			pthread_exit((void*) 0);
 		}
-		
-		
+		//FazerDepois alocação
+		//Recebe alocação
+		if(recv(sockEntrada,buffer_do_cliente, 16, 0) < 0){
+			perror("Falha no recebimento da verificação.\n");
+			close(sockEntrada);
+			pthread_exit((void*) 0);
+		}
+		printf("Pedido de Alocação do Cliente: %s.\n", buffer_do_cliente);
+		sleep(reqTempo);
+		cpu = atualizaCpu(cpu,reqCpu,2);
+		mem = atualizaMem(mem,reqMem,2);
 	}	
 }
 void servidor(){
