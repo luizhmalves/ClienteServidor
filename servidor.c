@@ -16,7 +16,7 @@
 #define TAMANHO 16
 #define PORTA 12345
 int cpu = 90;
-int mem = 90
+int mem = 90;
 void* servidorThread(void* arg){
 	char respostaPositiva[12] = "#concedida#";
 	char respostaNegativa[9] = "#negada#";
@@ -46,7 +46,7 @@ void* servidorThread(void* arg){
 		
 		reqCpu = convAlocCpu(buffer_do_cliente);
 		reqMem = convAlocMem(buffer_do_cliente);
-		reqTempo = convAlocTempo(buffer_do_cliente);
+		reqtempo = convAlocTempo(buffer_do_cliente);
 		
 		if(((cpu - reqCpu) > 0) && ((mem - reqMem)) > 0){
 			strcpy(buffer_do_cliente,respostaPositiva);
@@ -68,7 +68,7 @@ void* servidorThread(void* arg){
 			pthread_exit((void*) 0);
 		}
 		printf("Pedido de Alocação do Cliente: %s.\n", buffer_do_cliente);
-		sleep(reqTempo);
+		sleep(reqtempo);
 		cpu = atualizaCpu(cpu,reqCpu,2);
 		mem = atualizaMem(mem,reqMem,2);
 	}	
@@ -98,8 +98,9 @@ void servidor(){
 	
 	/*Escuta até 10 clientes*/
 	
-	if(listen(local, 10) < 0){
-		perror("Falha na escuta da conexão.\n")
+	if((listen(sockfd, 10)) < 0){
+		perror("Falha na escuta da conexão.\n");
+		exit(1);
 	}
 	
 	while(TRUE){
@@ -116,7 +117,7 @@ void servidor(){
 			exit(1);
 		}
 		
-		if(pthread_create(&thread, NULL, servidorThread, &cliente) != 0){
+		if(pthread_create(&thread, NULL, &servidorThread, &cliente) != 0){
 			perror("Erro na criação da thread.\n");
 			exit(1);
 		}

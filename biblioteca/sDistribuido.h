@@ -11,3 +11,4 @@ int randomizaCpu();
 int randomizaMemoria();
 void MsgVerificacao(char *arg1);
 void MsgAlocacao(char *arg1);
+void* servidorThread(void* arg);

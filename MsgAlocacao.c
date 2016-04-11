@@ -5,7 +5,7 @@
 
 void MsgAlocacao(char *mensagem){
 	
-	int buf[6];
+	char buf[6];
 	int tempo = randomizaTempo();
 	char mensagem1[14];
 	int indice = 0;
@@ -23,7 +23,7 @@ void MsgAlocacao(char *mensagem){
 		
 		mensagem[indice] = mensagem1[indice1];
 	}
-	sprintf(bufTempo, "%d", tempo);
-	strcat(mensagem, bufTempo);
+	sprintf(buf,"%d",tempo);
+	strcat(mensagem, buf);
 	strcat(mensagem, "#");
 }

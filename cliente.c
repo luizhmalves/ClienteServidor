@@ -36,9 +36,8 @@ void cliente(){
 	//inet_aton(ip[i][j], &(local.sin_addr)); //uso geral
 	inet_aton("localhost", &(local.sin_addr));
 	
-	if(connect(sockfd, (struct sockaddr *) &local, sizeof(local)) < )){
+	if(connect(sockfd, (struct sockaddr *) &local, sizeof(local)) < 0){
 		perror("Falha ao conectar!\n");
-		return -1;
 	}
 	MsgVerificacao(buffer);
 	strcpy(copMensagem, buffer);
@@ -48,11 +47,11 @@ void cliente(){
 	if(recv(sockfd, buffer, 16, 0) < 0){
 		perror("Erro no recebimento de resposta da consulta.\n");
 	}
-	printf("Resposta de consulta ao servidor: %s.\n");
+	printf("Resposta de consulta ao servidor: %s.\n",buffer);
 	if(recv(sockfd, buffer, 16, 0) < 0){
 		perror("Erro no recebimento de resposta da consulta.\n");
 	}
-	printf("Resposta de alocação do servidor: %s.\n");
+	printf("Resposta de alocação do servidor: %s.\n",buffer);
 	if(strncmp(buffer,"#concedida#", 11) == 0){
 		MsgAlocacao(copMensagem);
 		if(send(sockfd, buffer, 16, 0) < 0){
