@@ -79,7 +79,7 @@ void servidor(){
 	struct sockaddr_in local;
 	socklen_t sockLen;
 	
-	if ((sockfd = socket(AF_INET, SOCK_STREAM, 0) < 0)){
+	if ((sockfd = socket(AF_INET, SOCK_STREAM, 0)) < 0){
 		
 		perror("Falha na criação do socket.\n");
 		exit(1);
