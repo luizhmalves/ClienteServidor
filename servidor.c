@@ -14,7 +14,7 @@
 #include "biblioteca/sDistribuido.h"
 #define TRUE 1
 #define TAMANHO 16
-#define PORTA 12345
+#define PORTA 1234
 int cpu = 90;
 int mem = 90;
 void* servidorThread(void* arg){
@@ -98,7 +98,7 @@ void servidor(){
 	
 	/*Escuta até 10 clientes*/
 	
-	if((listen(sockfd, 10)) < 0){
+	if(listen(sockfd, 10) < 0){
 		perror("Falha na escuta da conexão.\n");
 		exit(1);
 	}
@@ -106,11 +106,13 @@ void servidor(){
 	while(TRUE){
 		int cliente;
 		struct sockaddr_in remoto;
-		unsigned int clntLen;
+		int clntLen;
 		clntLen = sizeof(remoto);
 		pthread_t thread;
 		
 		printf("Aguardando Conexão.\n");
+		
+		memset(&remoto, 0, sizeof(remoto));
 		
 		if((cliente = accept(sockfd, (struct sockaddr *)&remoto, &clntLen)) < 0){
 			perror("Erro no accept");
@@ -125,4 +127,3 @@ void servidor(){
 	}
 
 }
-
