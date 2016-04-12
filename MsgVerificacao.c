@@ -8,10 +8,9 @@ void MsgVerificacao(char *mensagem){
 	char bufCpu[2];
 	char bufMem[2];
 	char bufTempo[6];
-	char verificacao[9];
-	char alocacao[14];
 	int memoria = randomizaMemoria();
 	int cpu = randomizaCpu();
+	strcpy(mensagem, " ");
 	
 	strcat(mensagem, "#");
 	sprintf(bufCpu,"%d",cpu);
@@ -21,5 +20,3 @@ void MsgVerificacao(char *mensagem){
 	strcat(mensagem, bufMem);
 	strcat(mensagem, "?#");
 }
-
-
