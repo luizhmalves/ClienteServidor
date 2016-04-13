@@ -59,12 +59,16 @@ void* servidorThread(void* arg){
 					reqCpu = convAlocCpu(buffer_do_cliente);
 					reqMem = convAlocMem(buffer_do_cliente);
 					reqtempo = convAlocTempo(buffer_do_cliente);
-					if(((cpu - reqCpu) > 0) && ((mem - reqMem)) > 0){
-						strcpy(buffer_do_cliente,respostaPositiva);
-						if(send(sockEntrada,buffer_do_cliente, 16, 0) < 0){
-							perror("Falha no envio da resposta da alocação.\n");
-							close(sockEntrada);
-							pthread_exit((void*) 0);
+					if((cpu - reqCpu) > 0){
+						if ((mem - reqMem) > 0){
+							strcpy(buffer_do_cliente,respostaPositiva);
+							if(send(sockEntrada,buffer_do_cliente, 16, 0) < 0){
+								perror("Falha no envio da resposta da alocação.\n");
+								close(sockEntrada);
+								pthread_exit((void*) 0);/*se concedida fechar thread
+								*e ficar atualizando a capacidade da cpu e mem
+								*/
+							}
 						}				
 					}else{
 						strcpy(buffer_do_cliente,respostaNegativa);
@@ -81,12 +85,7 @@ void* servidorThread(void* arg){
 		}
 		//FazerDepois alocação
 		//Recebe alocação
-		/*if(recv(sockEntrada,buffer_do_cliente, 16, 0) < 0){
-			perror("Falha no recebimento da verificação.\n");
-			close(sockEntrada);
-			pthread_exit((void*) 0);
-		}
-		printf("Pedido de Alocação do Cliente: %s.\n", buffer_do_cliente);
+		/*
 		sleep(reqtempo);
 		cpu = atualizaCpu(cpu,reqCpu,2);
 		mem = atualizaMem(mem,reqMem,2);
