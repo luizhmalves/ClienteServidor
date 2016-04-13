@@ -3,16 +3,14 @@
 #include <string.h>
 
 void respostaConsulta(char *mensagem, int cpu, int mem){
-	int indice;	
 	char bufCpu[2];
 	char bufMem[2];
-	mensagem =" ";
-	
-	strcat(mensagem, "#");
-	sprintf(bufCpu, "%d", cpu);
+		
+	strcpy(mensagem, "#");
+	sprintf(bufCpu, "%.2d", cpu);
 	strcat(mensagem, bufCpu);
 	strcat(mensagem, "#");
-	sprintf(bufMem, "%d", mem);
+	sprintf(bufMem, "%.2d", mem);
 	strcat(mensagem, bufMem);
 	strcat(mensagem, "#");
 }

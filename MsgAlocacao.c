@@ -19,11 +19,8 @@ void MsgAlocacao(char *mensagem){
 			indice1++;
 		}
 	}
-	for(indice1 = 0; mensagem1[indice1] = '\0'; indice++){
-		
-		mensagem[indice] = mensagem1[indice1];
-	}
-	sprintf(buf,"%d",tempo);
+	strcpy(mensagem, mensagem1);
+	sprintf(buf,"%.6d",tempo);
 	strcat(mensagem, buf);
 	strcat(mensagem, "#");
 }

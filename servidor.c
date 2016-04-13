@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include <sys/time.h>
 #include <sys/types.h>
 #include <sys/socket.h>
@@ -15,54 +16,72 @@
 #define TRUE 1
 #define TAMANHO 16
 #define PORTA 1234
-int cpu = 90;
-int mem = 90;
+
 void* servidorThread(void* arg){
 	char respostaPositiva[12] = "#concedida#";
 	char respostaNegativa[9] = "#negada#";
 	char buffer_do_cliente[16];
+	
 	int sockEntrada = *(int *) arg;
-	int cpu = atualizaCpu(0,0,1);
-	int mem = atualizaMem(0,0,1);
+	int cpu = atualizaCpu(90,0,1);
+	int mem = atualizaMem(90,0,1);
 	int reqCpu;
 	int reqMem;
 	int reqtempo;
+		
 	
 	while(TRUE){
 		if(recv(sockEntrada,buffer_do_cliente, 16, 0) < 0){
 			perror("Falha no recebimento da verificação.\n");
 			close(sockEntrada);
 			pthread_exit((void*) 0);
-		}
-		printf("Pedido de Verificação do Cliente: %s.\n", buffer_do_cliente);
-		
-		respostaConsulta(buffer_do_cliente,cpu,mem);
-			
-		if(send(sockEntrada,buffer_do_cliente, 16, 0) < 0){
-			perror("Falha no envio da resposta da alocação.\n");
-			close(sockEntrada);
-			pthread_exit((void*) 0);
-		}		
-		
-		reqCpu = convAlocCpu(buffer_do_cliente);
-		reqMem = convAlocMem(buffer_do_cliente);
-		reqtempo = convAlocTempo(buffer_do_cliente);
-		
-		if(((cpu - reqCpu) > 0) && ((mem - reqMem)) > 0){
-			strcpy(buffer_do_cliente,respostaPositiva);
-			if(send(sockEntrada,buffer_do_cliente, 16, 0) < 0){
-				perror("Falha no envio da resposta da alocação.\n");
-				close(sockEntrada);
-				pthread_exit((void*) 0);
-			}				
 		}else{
-			strcpy(buffer_do_cliente,respostaNegativa);
-			close(sockEntrada);
-			pthread_exit((void*) 0);
+			
+			
+			if(strlen(buffer_do_cliente) == 9){
+			
+				printf("Pedido de Verificação do Cliente: %s.\n", buffer_do_cliente);
+				
+				respostaConsulta(buffer_do_cliente,cpu,mem);//Duvida envio a resposta de consulta primeiro 
+				if(send(sockEntrada,buffer_do_cliente, 16, 0) < 0){
+					perror("Falha no envio da resposta da alocação.\n");
+					close(sockEntrada);
+					pthread_exit((void*) 0);
+				}		
+
+			}else{
+				
+				if(strlen(buffer_do_cliente) == 14){
+					printf("Pedido de Alocação do Cliente: %s.\n", buffer_do_cliente);
+					/*FAZERDEPOIS até aqui está certo
+					* retorno da resposta positiva e negada está errado
+					*/
+					reqCpu = convAlocCpu(buffer_do_cliente);
+					reqMem = convAlocMem(buffer_do_cliente);
+					reqtempo = convAlocTempo(buffer_do_cliente);
+					if(((cpu - reqCpu) > 0) && ((mem - reqMem)) > 0){
+						strcpy(buffer_do_cliente,respostaPositiva);
+						if(send(sockEntrada,buffer_do_cliente, 16, 0) < 0){
+							perror("Falha no envio da resposta da alocação.\n");
+							close(sockEntrada);
+							pthread_exit((void*) 0);
+						}				
+					}else{
+						strcpy(buffer_do_cliente,respostaNegativa);
+						if(send(sockEntrada,buffer_do_cliente, 16, 0) < 0){
+							perror("Falha no envio da resposta da alocação.\n");
+							close(sockEntrada);
+							pthread_exit((void*) 0);
+						}		
+						close(sockEntrada);
+						pthread_exit((void*) 0);
+					}					
+				}
+			}
 		}
 		//FazerDepois alocação
 		//Recebe alocação
-		if(recv(sockEntrada,buffer_do_cliente, 16, 0) < 0){
+		/*if(recv(sockEntrada,buffer_do_cliente, 16, 0) < 0){
 			perror("Falha no recebimento da verificação.\n");
 			close(sockEntrada);
 			pthread_exit((void*) 0);
@@ -71,6 +90,7 @@ void* servidorThread(void* arg){
 		sleep(reqtempo);
 		cpu = atualizaCpu(cpu,reqCpu,2);
 		mem = atualizaMem(mem,reqMem,2);
+	}*/
 	}	
 }
 void servidor(){
@@ -88,6 +108,7 @@ void servidor(){
 	memset(&local, 0, sizeof(local));
 	local.sin_family		= AF_INET;
 	local.sin_addr.s_addr	= htonl(INADDR_ANY);
+	//local.sin_addr.s_addr	= inet_addr("localhost");
 	local.sin_port			= htons(PORTA);
 	sockLen = sizeof(local);
 	
@@ -111,9 +132,7 @@ void servidor(){
 		pthread_t thread;
 		
 		printf("Aguardando Conexão.\n");
-		
 		memset(&remoto, 0, sizeof(remoto));
-		
 		if((cliente = accept(sockfd, (struct sockaddr *)&remoto, &clntLen)) < 0){
 			perror("Erro no accept");
 			exit(1);
@@ -127,3 +146,4 @@ void servidor(){
 	}
 
 }
+

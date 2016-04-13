@@ -10,13 +10,14 @@ void MsgVerificacao(char *mensagem){
 	char bufTempo[6];
 	int memoria = randomizaMemoria();
 	int cpu = randomizaCpu();
-	strcpy(mensagem, " ");
-	
-	strcat(mensagem, "#");
-	sprintf(bufCpu,"%d",cpu);
+		
+	strcpy(mensagem, "#");
+	sprintf(bufCpu,"%.2d",cpu);
 	strcat(mensagem, bufCpu);
 	strcat(mensagem, "?#");	
-	sprintf(bufMem,"%d", memoria);
+	sprintf(bufMem,"%.2d", memoria);
 	strcat(mensagem, bufMem);
 	strcat(mensagem, "?#");
 }
+
+
