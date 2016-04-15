@@ -9,8 +9,8 @@ void respostaConsulta(char *mensagem, int cpu, int mem){
 	strcpy(mensagem, "#");
 	sprintf(bufCpu, "%.2d", cpu);
 	strcat(mensagem, bufCpu);
-	strcat(mensagem, "#");
+	strcat(mensagem, "cpu#");
 	sprintf(bufMem, "%.2d", mem);
 	strcat(mensagem, bufMem);
-	strcat(mensagem, "#");
+	strcat(mensagem, "mem#");
 }

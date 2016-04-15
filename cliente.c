@@ -19,8 +19,9 @@ void cliente(){
 	
 	int sockfd;
 	struct sockaddr_in local;
-	char buffer[16];
-	char copMensagem[16];
+	char mensagemVerificacao[12]="#cpu?#mem?#";
+	char buffer[20];
+	
 	/* FazerDepois colocar apartir daqui em um loop
 	 * Criar matriz com os endereços de ip
 	 * criar vetor de inteiros das portas para teste local
@@ -39,25 +40,24 @@ void cliente(){
 	if(connect(sockfd, (struct sockaddr *) &local, sizeof(local)) < 0){
 		perror("Falha ao conectar!\n");
 	}
-	MsgVerificacao(buffer);
-	strcpy(copMensagem, buffer);
-	if(send(sockfd, buffer, 16, 0) < 0){
+	
+	strcpy(buffer, mensagemVerificacao);
+	if(send(sockfd, buffer, 21, 0) < 0){
 		perror("Falha no envio da mensagem de verificação.\n");
 	}
-	if(recv(sockfd, buffer, 16, 0) < 0){
+	if(recv(sockfd, buffer, 21, 0) < 0){
 		perror("Erro no recebimento de resposta da consulta.\n");
 	}
-	printf("Resposta de consulta ao servidor: %s.\n",buffer);
-	MsgAlocacao(copMensagem);
-	strcpy(buffer,copMensagem);
-	if(send(sockfd, buffer, 16, 0) < 0){
+	printf("Resposta de consulta ao servidor: %s\n",buffer);
+	MsgAlocacao(buffer);
+	if(send(sockfd, buffer, 21, 0) < 0){
 		perror("Falha no envio da mensagem de alocação.\n");
 	}
 	
-	if(recv(sockfd, buffer, 16, 0) < 0){
+	if(recv(sockfd, buffer, 21, 0) < 0){
 		perror("Erro no recebimento de resposta da consulta.\n");
 	}
-	printf("Resposta de alocação do servidor: %s.\n",buffer);
+	printf("Resposta de alocação do servidor: %s\n",buffer);
 	
 	/*if(strncmp(buffer,"#concedida#", 11) == 0){
 		MsgAlocacao(copMensagem);

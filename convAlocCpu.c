@@ -10,10 +10,13 @@ int convAlocCpu(char *mensagem){
 	for(indice = 0; indice < 3; indice++){
 		
 		if(mensagem[indice] != '#'){
-			bufCpu[indice1] = mensagem[indice];
-			indice1++;
+			if (mensagem[indice] != 'c'){
+				bufCpu[indice1] = mensagem[indice];
+				indice1++;
+			}
 		}
 	}
+	
 	cpu = atoi(bufCpu);
 	return cpu;	
 }

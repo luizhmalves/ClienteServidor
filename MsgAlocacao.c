@@ -5,22 +5,27 @@
 
 void MsgAlocacao(char *mensagem){
 	
-	char buf[6];
+	char bufCpu[2];
+	char bufMem[2];
+	char bufTempo[6];
+	int memoria = randomizaMemoria();
+	int cpu = randomizaCpu();
 	int tempo = randomizaTempo();
-	char mensagem1[14];
-	int indice = 0;
-	int indice1 = 0;
 	
-	for(indice = 0; mensagem[indice] != '\0'; indice ++){
-		
-		if(mensagem[indice] != '?'){
-			
-			mensagem1[indice1] = mensagem[indice];
-			indice1++;
-		}
-	}
-	strcpy(mensagem, mensagem1);
-	sprintf(buf,"%.6d",tempo);
-	strcat(mensagem, buf);
+	
+	strcpy(mensagem, "#");
+	sprintf(bufCpu,"%.2d",cpu);
+	strcat(mensagem, bufCpu);
+	strcat(mensagem, "cpu#");	
+	sprintf(bufMem,"%.2d", memoria);
+	strcat(mensagem, bufMem);
+	strcat(mensagem, "mem#");
+	sprintf(bufTempo,"%.6d",tempo);
+	strcat(mensagem, bufTempo);
 	strcat(mensagem, "#");
 }
+
+
+	
+		
+	
