@@ -12,7 +12,7 @@
 #include <errno.h>
 #include "biblioteca/sDistribuido.h"
 
-#define PORTA 1234
+
 #define TRUE 1
 
 void cliente(){
@@ -21,51 +21,83 @@ void cliente(){
 	struct sockaddr_in local;
 	char mensagemVerificacao[12]="#cpu?#mem?#";
 	char buffer[20];
+	int indice;
+	int quantidade;
+	int *servidores;
+	int porta;
 	
-	/* FazerDepois colocar apartir daqui em um loop
-	 * Criar matriz com os endereços de ip
-	 * criar vetor de inteiros das portas para teste local
-	*/
-	if((sockfd = socket(AF_INET, SOCK_STREAM, 0)) < 0){
-		perror("Falha na criação do soquete!\n");
+	printf("Informe a quantidade de servidores compõe está subrede:\n");
+	scanf("%d",&quantidade);
+	
+	servidores = (int *) malloc(quantidade * sizeof(int));
+	if(!servidores){
+		perror("Erro na alocação da quantidade de servidores.\n");
 		exit(1);
 	}
-	
-	memset(&local, 0, sizeof(local));
-	local.sin_family		= AF_INET;
-	local.sin_port			= htons(PORTA);
-	//inet_aton(ip[i][j], &(local.sin_addr)); //uso geral
-	inet_aton("127.0.0.1", &(local.sin_addr));
-	
-	if(connect(sockfd, (struct sockaddr *) &local, sizeof(local)) < 0){
-		perror("Falha ao conectar!\n");
+	for(indice = 0; indice < quantidade; indice++){
+		printf("Informe o número da porta do servidor %d.\n", indice + 1);
+		scanf("%d",&porta);
+		servidores[indice] = porta;
 	}
+	indice = 0;
+	while(indice < quantidade){
 	
-	strcpy(buffer, mensagemVerificacao);
-	if(send(sockfd, buffer, 21, 0) < 0){
-		perror("Falha no envio da mensagem de verificação.\n");
-	}
-	if(recv(sockfd, buffer, 21, 0) < 0){
-		perror("Erro no recebimento de resposta da consulta.\n");
-	}
-	printf("Resposta de consulta ao servidor: %s\n",buffer);
-	MsgAlocacao(buffer);
-	if(send(sockfd, buffer, 21, 0) < 0){
-		perror("Falha no envio da mensagem de alocação.\n");
-	}
+		if((sockfd = socket(AF_INET, SOCK_STREAM, 0)) < 0){
+			perror("Falha na criação do soquete!\n");
+			//sleep(120);
+			exit(1);
+		}
 	
-	if(recv(sockfd, buffer, 21, 0) < 0){
-		perror("Erro no recebimento de resposta da consulta.\n");
-	}
-	printf("Resposta de alocação do servidor: %s\n",buffer);
+		memset(&local, 0, sizeof(local));
+		local.sin_family		= AF_INET;
+		local.sin_port			= htons(servidores[indice]);
+		//inet_aton(ip[i][j], &(local.sin_addr)); //uso geral
+		inet_aton("127.0.0.1", &(local.sin_addr));
 	
-	/*if(strncmp(buffer,"#concedida#", 11) == 0){
-		MsgAlocacao(copMensagem);
-		if(send(sockfd, buffer, 16, 0) < 0){
+		if(connect(sockfd, (struct sockaddr *) &local, sizeof(local)) < 0){
+			perror("Falha ao conectar!\n");
+		}
+		printf("Comunicacao com o servidor porta = %d\n", servidores[indice]);
+		
+		strcpy(buffer, mensagemVerificacao);
+		
+		if(send(sockfd, buffer, 21, 0) < 0){
+			perror("Falha no envio da mensagem de verificação.\n");
+		}
+		if(recv(sockfd, buffer, 21, 0) < 0){
+			perror("Erro no recebimento de resposta da consulta.\n");
+		}
+		printf("Resposta de consulta ao servidor: %s\n",buffer);
+		MsgAlocacao(buffer);
+		if(send(sockfd, buffer, 21, 0) < 0){
 			perror("Falha no envio da mensagem de alocação.\n");
 		}
-	}else if(strncmp(buffer,"#negada#", 8)){
+	
+		if(recv(sockfd, buffer, 21, 0) < 0){
+			perror("Erro no recebimento de resposta da consulta.\n");
+		}
+		
+		
+		printf("Resposta de alocação do servidor: %s\n",buffer);	
+		
+		
+		if(strcmp(buffer,"#concedida#") == 0){
+			
+				indice ++;
+				close(sockfd);
+				sleep(10);
+					
+		}else if(strcmp(buffer,"#negada#") == 0){
+			
+			indice ++;
+			close(sockfd);
+			sleep(10);
+		
+		}
+		if(indice == quantidade){
+			indice = 0;
+		}
 		close(sockfd);
-		//break quando houver loop.
-	}*/		
+		
+	}		
 }
