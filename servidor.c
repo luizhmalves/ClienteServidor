@@ -25,21 +25,20 @@ int mem;
 int reqCpu;
 int reqMem;
 pthread_mutex_t mutex;
-pthread_mutex_t mutex1;
-pthread_mutex_t mutex2;
+
+
 void* atualizaServidor(void* arg){
 	int tempo = *(int*) arg;
 	
 	
-	pthread_mutex_lock(&mutex1);
+	pthread_mutex_lock(&mutex);
 	cpu -= reqCpu;
 	mem -= reqMem;
-	pthread_mutex_unlock(&mutex1);
+	pthread_mutex_unlock(&mutex);
 	sleep(tempo);
-	pthread_mutex_lock(&mutex2);
 	cpu += reqCpu;
 	mem += reqMem;
-	pthread_mutex_unlock(&mutex2);
+	
 }
 void* servidorThread(void* arg){
 
@@ -104,7 +103,7 @@ void* servidorThread(void* arg){
 							pthread_detach(thread1);							
 						}				
 					}else{
-						pthread_mutex_unlock(&mutex);	
+						
 						strcpy(buffer_do_cliente,respostaNegativa);
 						if(send(sockEntrada,buffer_do_cliente, 21, 0) < 0){
 							perror("Falha no envio da resposta da alocação.\n");
@@ -136,6 +135,7 @@ void servidor(){
 	printf("Informe a porta local para este servidor:\n");
 	scanf("%d",&porta);
 	pthread_mutex_init(&mutex, NULL);
+	
 	cpu = 90;
 	mem = 90;
 	
