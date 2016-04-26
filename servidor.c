@@ -28,16 +28,21 @@ pthread_mutex_t mutex;
 
 
 void* atualizaServidor(void* arg){
+	
 	int tempo = *(int*) arg;
+	int cpCpu,cpMem;
 	
 	
 	pthread_mutex_lock(&mutex);
+	cpCpu = reqCpu;
+	cpMem = reqMem;
 	cpu -= reqCpu;
 	mem -= reqMem;
 	pthread_mutex_unlock(&mutex);
 	sleep(tempo);
-	cpu += reqCpu;
-	mem += reqMem;
+	cpu += cpCpu;
+	mem += cpMem;
+	pthread_exit((void*) 0);
 	
 }
 void* servidorThread(void* arg){
@@ -63,13 +68,12 @@ void* servidorThread(void* arg){
 			pthread_exit((void*) 0);
 		}else{
 			
-			
 			if(strlen(buffer_do_cliente) == 11){
-			
+				
 				printf("Pedido de Verificação do Cliente: %s\n", buffer_do_cliente);
-				pthread_mutex_lock(&mutex);				
+								
 				respostaConsulta(buffer_do_cliente,cpu,mem);
-				pthread_mutex_unlock(&mutex);	
+					
 				if(send(sockEntrada,buffer_do_cliente, 21, 0) < 0){
 					perror("Falha no envio da resposta da alocação.\n");
 					close(sockEntrada);
@@ -85,34 +89,35 @@ void* servidorThread(void* arg){
 					reqCpu = convAlocCpu(buffer_do_cliente);
 					reqMem = convAlocMem(buffer_do_cliente);
 					reqTempo = convAlocTempo(buffer_do_cliente);
+					
 								
-					if((cpu - reqCpu) > 0){
-						if ((mem - reqMem) > 0){
-							strcpy(buffer_do_cliente,respostaPositiva);
-							if(send(sockEntrada,buffer_do_cliente, 21, 0) < 0){
-								perror("Falha no envio da resposta da alocação.\n");
-								close(sockEntrada);
-								pthread_exit((void*) 0);
-							}
+					if(((cpu - reqCpu) > 0) && ((mem - reqMem) > 0)){
+						
+						strcpy(buffer_do_cliente,respostaPositiva);
+						
+						if(send(sockEntrada,buffer_do_cliente, 21, 0) < 0){
+							perror("Falha no envio da resposta da alocação confirmada.\n");
+							close(sockEntrada);
+							pthread_exit((void*) 0);
+						}
 							
-							if(pthread_create(&thread1, NULL, &atualizaServidor, &reqTempo) != 0){
-								perror("Erro na criação da thread.\n");
-								exit(1);
-							}
+						if(pthread_create(&thread1, NULL, atualizaServidor, &reqTempo) != 0){
+							perror("Erro na criação da thread.\n");
+							exit(1);
+						}
 		
-							pthread_detach(thread1);							
-						}				
+						pthread_detach(thread1);							
+										
 					}else{
 						
 						strcpy(buffer_do_cliente,respostaNegativa);
 						if(send(sockEntrada,buffer_do_cliente, 21, 0) < 0){
-							perror("Falha no envio da resposta da alocação.\n");
+							perror("Falha no envio da resposta da alocação negada.\n");
 							close(sockEntrada);
 							pthread_exit((void*) 0);
 						}
 						
-					}
-					
+					}					
 					
 					close(sockEntrada);
 					pthread_exit((void*) 0);
@@ -131,10 +136,11 @@ void servidor(){
 	struct sockaddr_in local;
 	socklen_t sockLen;
 	
-	
+	pthread_mutex_init(&mutex, NULL);
 	printf("Informe a porta local para este servidor:\n");
 	scanf("%d",&porta);
-	pthread_mutex_init(&mutex, NULL);
+	
+	
 	
 	cpu = 90;
 	mem = 90;
@@ -161,7 +167,7 @@ void servidor(){
 		perror("Falha na escuta da conexão.\n");
 		exit(1);
 	}
-	pthread_mutex_init(&mutex, NULL);
+	printf("Aguardando Conexão.\n");
 	while(TRUE){
 		int cliente;
 		struct sockaddr_in remoto;
@@ -170,7 +176,8 @@ void servidor(){
 		pthread_t thread;
 		
 		
-		printf("Aguardando Conexão.\n");
+		
+		
 		memset(&remoto, 0, sizeof(remoto));
 		if((cliente = accept(sockfd, (struct sockaddr *)&remoto, &clntLen)) < 0){
 			perror("Erro no accept");
@@ -183,7 +190,8 @@ void servidor(){
 		}
 		
 		pthread_detach(thread);
+		
 	}
-	pthread_mutex_destroy(&mutex);
+	
 
 }
