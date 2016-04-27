@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <unistd.h>
 #include <string.h>
 #include <sys/time.h>
 #include <sys/types.h>
@@ -33,15 +34,17 @@ void* atualizaServidor(void* arg){
 	int cpCpu,cpMem;
 	
 	
-	pthread_mutex_lock(&mutex);
 	cpCpu = reqCpu;
 	cpMem = reqMem;
-	cpu -= reqCpu;
-	mem -= reqMem;
-	pthread_mutex_unlock(&mutex);
-	sleep(tempo);
+	
+	sleep((tempo/1000));
+	
+	
+	pthread_mutex_lock(&mutex);
 	cpu += cpCpu;
 	mem += cpMem;
+	
+	pthread_mutex_unlock(&mutex);
 	pthread_exit((void*) 0);
 	
 }
@@ -52,9 +55,7 @@ void* servidorThread(void* arg){
 	char respostaNegativa[9] = "#negada#";
 	char buffer_do_cliente[16];	
 	int sockEntrada = *(int *) arg;
-	
-	
-	
+		
 	int reqTempo;
 	
 	
@@ -71,8 +72,10 @@ void* servidorThread(void* arg){
 			if(strlen(buffer_do_cliente) == 11){
 				
 				printf("Pedido de Verificação do Cliente: %s\n", buffer_do_cliente);
-								
+				
+						
 				respostaConsulta(buffer_do_cliente,cpu,mem);
+				
 					
 				if(send(sockEntrada,buffer_do_cliente, 21, 0) < 0){
 					perror("Falha no envio da resposta da alocação.\n");
@@ -100,12 +103,15 @@ void* servidorThread(void* arg){
 							close(sockEntrada);
 							pthread_exit((void*) 0);
 						}
-							
-						if(pthread_create(&thread1, NULL, atualizaServidor, &reqTempo) != 0){
+						pthread_mutex_lock(&mutex);
+						cpu -= reqCpu;
+						mem -= reqMem;	
+						pthread_mutex_unlock(&mutex);
+						if(pthread_create(&thread1, NULL, &atualizaServidor, &reqTempo) != 0){
 							perror("Erro na criação da thread.\n");
 							exit(1);
 						}
-		
+						
 						pthread_detach(thread1);							
 										
 					}else{

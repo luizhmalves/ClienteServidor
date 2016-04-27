@@ -14,4 +14,3 @@ extern int cpu;
 extern int mem;
 extern int reqCpu;
 extern int reqMem;
-//extern pthread_mutex_t mutex;
