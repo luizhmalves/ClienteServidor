@@ -1,3 +1,5 @@
+//Biblioteca da aplicação
+
 void cliente();
 void servidor();
 int convAlocCpu(char *arg1);
