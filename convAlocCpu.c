@@ -2,6 +2,7 @@
 #include <string.h>
 #include <stdlib.h>
 
+//Função de conversão de string para inteiro capacidade de cpu
 int convAlocCpu(char *mensagem){
 	
 	char bufCpu[2];

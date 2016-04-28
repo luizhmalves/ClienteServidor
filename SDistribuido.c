@@ -16,5 +16,5 @@ void main(int argc, char *argv[]){
 		default:
 			printf("Opcao invalida!!!\n");
 	}
-	//FazerDepois não testada separadamente
+	
 }

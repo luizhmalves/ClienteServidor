@@ -20,14 +20,14 @@
 #define TRUE 1
 #define MAX_VALOR 2147483647
 
-
+//Declaração das variáveis globais
 int cpu;
 int mem;
 int reqCpu;
 int reqMem;
 pthread_mutex_t mutex;
 
-
+//Thread para atualização de quantidade de cpu e mem do servidor
 void* atualizaServidor(void* arg){
 	
 	int tempo = *(int*) arg;
@@ -39,7 +39,7 @@ void* atualizaServidor(void* arg){
 	
 	sleep((tempo/1000));
 	
-	
+	//Semáforo para incremento das variáveis globais
 	pthread_mutex_lock(&mutex);
 	cpu += cpCpu;
 	mem += cpMem;
@@ -48,6 +48,7 @@ void* atualizaServidor(void* arg){
 	pthread_exit((void*) 0);
 	
 }
+//Thread para recebimento e resposta de requisições do cliente
 void* servidorThread(void* arg){
 
 	pthread_t thread1;
@@ -62,21 +63,21 @@ void* servidorThread(void* arg){
 	
 	
 	while(TRUE){
-		
+		//Receive para recebimento das requisições
 		if(recv(sockEntrada,buffer_do_cliente, 21, 0) < 0){
 			perror("Falha no recebimento da verificação.\n");
 			close(sockEntrada);
 			pthread_exit((void*) 0);
 		}else{
-			
+			//Lógica para verificar se o cliente requisitou verificação
 			if(strlen(buffer_do_cliente) == 11){
 				
 				printf("Pedido de Verificação do Cliente: %s\n", buffer_do_cliente);
 				
-						
+				//Criação da mensagem de resposta de quantidade de recursos		
 				respostaConsulta(buffer_do_cliente,cpu,mem);
 				
-					
+				// Envio da mensagem de requisição/Consulta	
 				if(send(sockEntrada,buffer_do_cliente, 21, 0) < 0){
 					perror("Falha no envio da resposta da alocação.\n");
 					close(sockEntrada);
@@ -85,17 +86,19 @@ void* servidorThread(void* arg){
 					
 
 			}else{
-				
+				//Lógica para verificar se o cliente requisitou alocação
 				if((strlen(buffer_do_cliente) >= 13) && (strlen(buffer_do_cliente) <= 20)){
 					printf("Pedido de Alocação do Cliente: %s\n", buffer_do_cliente);
 					
+					//Conversão da requisição de alocação para inteiro
 					reqCpu = convAlocCpu(buffer_do_cliente);
 					reqMem = convAlocMem(buffer_do_cliente);
 					reqTempo = convAlocTempo(buffer_do_cliente);
 					
-								
+					//Lógica para avaliar recursos disponíveis			
 					if(((cpu - reqCpu) > 0) && ((mem - reqMem) > 0)){
 						
+						//Passagem para o buffer a resposta positiva
 						strcpy(buffer_do_cliente,respostaPositiva);
 						
 						if(send(sockEntrada,buffer_do_cliente, 21, 0) < 0){
@@ -103,10 +106,13 @@ void* servidorThread(void* arg){
 							close(sockEntrada);
 							pthread_exit((void*) 0);
 						}
+						//Semáforo para decrementação das variáveis globais
 						pthread_mutex_lock(&mutex);
 						cpu -= reqCpu;
 						mem -= reqMem;	
 						pthread_mutex_unlock(&mutex);
+						
+						//Criação da thread para cálculo das variáveis globais
 						if(pthread_create(&thread1, NULL, &atualizaServidor, &reqTempo) != 0){
 							perror("Erro na criação da thread.\n");
 							exit(1);
@@ -115,7 +121,7 @@ void* servidorThread(void* arg){
 						pthread_detach(thread1);							
 										
 					}else{
-						
+						//Passagem para o buffer a resposta negativa
 						strcpy(buffer_do_cliente,respostaNegativa);
 						if(send(sockEntrada,buffer_do_cliente, 21, 0) < 0){
 							perror("Falha no envio da resposta da alocação negada.\n");
@@ -138,30 +144,30 @@ void* servidorThread(void* arg){
 void servidor(){
 			
 	int sockfd;
-	int porta;
-	struct sockaddr_in local;
+	char nome[100];
+	struct sockaddr_un local;
 	socklen_t sockLen;
 	
 	pthread_mutex_init(&mutex, NULL);
-	printf("Informe a porta local para este servidor:\n");
-	scanf("%d",&porta);
-	
+	printf("Informe o nome deste servidor:\n");
+	scanf("%s",nome);
+	printf("%s\n",nome);
 	
 	
 	cpu = 90;
 	mem = 90;
 	
 	
-	if ((sockfd = socket(AF_INET, SOCK_STREAM, 0)) < 0){
+	if ((sockfd = socket(AF_UNIX, SOCK_STREAM, 0)) < 0){
 		
 		perror("Falha na criação do socket.\n");
 		exit(1);
 	}
 	
+	//Parâmetros do soquete
 	memset(&local, 0, sizeof(local));
-	local.sin_family		= AF_INET;
-	local.sin_addr.s_addr	= htonl(INADDR_ANY);
-	local.sin_port			= htons(porta);
+	local.sun_family		= AF_UNIX;
+	strcpy(local.sun_path,nome);
 	sockLen = sizeof(local);
 	
 	if(bind(sockfd,(struct sockaddr *)&local, sockLen) < 0){
@@ -176,7 +182,7 @@ void servidor(){
 	printf("Aguardando Conexão.\n");
 	while(TRUE){
 		int cliente;
-		struct sockaddr_in remoto;
+		struct sockaddr_un remoto;
 		int clntLen;
 		clntLen = sizeof(remoto);
 		pthread_t thread;

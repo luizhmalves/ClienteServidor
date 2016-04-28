@@ -1,6 +1,8 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
+
+//Função de conversão de string para inteiro capacidade de mem
 int convAlocMem(char *mensagem){
 	
 	int indice = 0;

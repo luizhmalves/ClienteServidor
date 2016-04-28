@@ -2,6 +2,8 @@
 #include <string.h>
 #include <stdlib.h>
 
+
+//Função de conversão de string para inteiro capacidade de tempo
 int convAlocTempo(char *mensagem){
 	
 	char buf[7];

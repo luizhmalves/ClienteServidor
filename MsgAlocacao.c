@@ -3,6 +3,8 @@
 #include <stdlib.h>
 #include "biblioteca/sDistribuido.h"
 
+
+//Função de conversão de inteiros para string para criar mensagem de alocação
 void MsgAlocacao(char *mensagem){
 	
 	char bufCpu[2];
